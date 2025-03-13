@@ -4,8 +4,13 @@
 /* Assegno alla variabile parking il parametro GET (che è una super variabile globale) ricevuto: se spuntato il valore sarà 'true', altrimenti sarà 'false'. Inizialmente, al caricamento dell'immagine, il suo valore sarà sempre false.
         La funzione isset() verifica se una variabile è definita e non è null */
 $parking = isset($_GET['parking']) ? $_GET['parking'] : 'false';
-var_dump($parking);
-echo $parking;
+// var_dump($parking);
+// echo $parking;
+
+// Alla variabile $vote faccio il casting con (int), perchè il valore restituito dal parametro GET (dalla query string) è sempre una stringa
+$vote = isset($_GET['vote']) ? (int) $_GET['vote'] : 0;
+// var_dump($vote);
+// echo $vote;
 ?>
 
 <html lang="en">
@@ -71,8 +76,8 @@ echo $parking;
         <div class="row">
             <?php
 
-            /* SE NON HO INSERITO IL FILTRO DI RICERCA DEL PARCHEGGIO RESTITUISCO TUTTI GLI HOTEL */
-            if ($parking == 'false') {
+            /* SE NON HO INSERITO IL FILTRO DI RICERCA DEL PARCHEGGIO E DEL VOTO RESTITUISCO TUTTI GLI HOTEL */
+            if ($parking == 'false' && $vote <= 0) {
                 foreach ($hotels as $hotel) {
                     // var_dump($hotel);
             ?>
@@ -110,12 +115,108 @@ echo $parking;
                     <?php
                 }
             }
-            // ALTRIMENTI RESTITUISCO GLI HOTEL CHE HANNO IL PARCHEGGIO
+
+
+
+            /* SE NON HO INSERITO IL FILTRO DI RICERCA DEL PARCHEGGIO MA HO INSERITO IL FILTRO DI RICERCA DEL VOTO ALLORA VISUALIZZO GLI HOTEL
+               FILTRATI SOLTANTO PER IL VOTO */ else if ($parking == 'false' && $vote > 0) {
+                foreach ($hotels as $hotel) {
+                    if ($hotel['vote'] >= $vote) {
+
+
+                        // var_dump($hotel);
+                    ?>
+
+                        <div class="col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center my-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Hotel
+                                </div>
+
+                                <?php
+                                foreach ($hotel as $key => $value) {
+                                ?>
+
+                                    <ul class="list-group list-group-flush">
+                                        <?php
+                                        if ($key == 'parking') {
+                                            if ($value == true) {
+                                                $value = 'true';
+                                            } else {
+                                                $value = 'false';
+                                            }
+                                        }
+                                        ?>
+                                        <li class="list-group-item"><?php echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value;  ?></li>
+                                    </ul>
+
+                                <?php
+                                    // * La funzione ucwords trasforma in maiuscolo il primo carattere della parola contenuta in $key
+                                    //echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value . "<br>";
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    <?php
+                    } else if ($vote > 5) {
+                        echo '<h2 class="text-center">Non puoi filtrare un punteggio maggiore di 5</h2>';
+                        break;
+                    }
+                }
+            }
+
+
+
+            /* SE HO INSERITO ENTRAMBI I FILTRI DI RICERCA ALLORA FILTRO SIA PER PARCHEGGIO PRESENTE CHE PER VOTO */ else if ($parking == 'true' && $vote > 0) {
+                foreach ($hotels as $hotel) {
+                    if ($hotel['vote'] >= $vote && $hotel['parking'] == true) {
+                        // var_dump($hotel);
+                    ?>
+
+                        <div class="col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center my-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Hotel
+                                </div>
+
+                                <?php
+                                foreach ($hotel as $key => $value) {
+                                ?>
+
+                                    <ul class="list-group list-group-flush">
+                                        <?php
+                                        if ($key == 'parking') {
+                                            if ($value == true) {
+                                                $value = 'true';
+                                            } else {
+                                                $value = 'false';
+                                            }
+                                        }
+                                        ?>
+                                        <li class="list-group-item"><?php echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value;  ?></li>
+                                    </ul>
+
+                                <?php
+                                    // * La funzione ucwords trasforma in maiuscolo il primo carattere della parola contenuta in $key
+                                    //echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value . "<br>";
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    <?php
+                    } else if ($vote > 5) {
+                        echo '<h2 class="text-center">Non puoi filtrare un punteggio maggiore di 5</h2>';
+                        break;
+                    }
+                }
+            }
+
+
+
+            // ALTRIMENTI RESTITUISCO SOLO GLI HOTEL CHE HANNO IL PARCHEGGIO
             else {
                 foreach ($hotels as $hotel) {
                     if ($hotel['parking'] == true) {
-
-
                         // var_dump($hotel);
                     ?>
 
@@ -166,7 +267,7 @@ echo $parking;
                 <label for="parking">There is a car park</label>
             </div>
             <label for="vote">Filtered by vote:</label>
-            <input type="number" name="" id="vote">
+            <input type="number" name="vote" id="vote">
             <input type="submit" value="Filter">
         </form>
 
