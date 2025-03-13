@@ -55,22 +55,41 @@
         ],
 
     ];
+
     ?>
 
-    <ul>
-
-        <?php
+    <div class="container">
+        <div class="row">
+            <?php
             foreach ($hotels as $hotel) {
                 //var_dump($hotel);
-                foreach ($hotel as $key => $value){
-                    echo "<li>". $key . ": " . $value ."</li>";
-                }
+            ?>
 
-                echo "<br>";
+                <div class="col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center my-3">
+                    <div class="card">
+                        <div class="card-header">
+                            Hotel
+                        </div>
+
+                        <?php
+                        foreach ($hotel as $key => $value) {
+                        ?>
+
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><?php echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value;  ?></li>
+                            </ul>
+
+                        <?php
+                            // * La funzione ucwords trasforma in maiuscolo il primo carattere della parola contenuta in $key
+                            //echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value . "<br>";
+                        }
+                        ?>
+                    </div>
+                </div>
+            <?php
             }
-        ?>
-
-    </ul>
+            ?>
+        </div>
 </body>
 
 </html>
