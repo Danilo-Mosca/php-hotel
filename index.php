@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+
+<?php
+/* Assegno alla variabile parking il parametro GET (che è una super variabile globale) ricevuto: se spuntato il valore sarà 'true', altrimenti sarà 'false'. Inizialmente, al caricamento dell'immagine, il suo valore sarà sempre false.
+        La funzione isset() verifica se una variabile è definita e non è null */
+$parking = isset($_GET['parking']) ? $_GET['parking'] : 'false';
+var_dump($parking);
+echo $parking;
+?>
+
 <html lang="en">
 
 <head>
@@ -13,7 +22,7 @@
 </head>
 
 <body>
-    <h1>PHP Hotels</h1>
+    <h1 class="h1-title">PHP Hotels</h1>
 
     <?php
     // Array di hotels
@@ -61,35 +70,106 @@
     <div class="container">
         <div class="row">
             <?php
-            foreach ($hotels as $hotel) {
-                //var_dump($hotel);
+
+            /* SE NON HO INSERITO IL FILTRO DI RICERCA DEL PARCHEGGIO RESTITUISCO TUTTI GLI HOTEL */
+            if ($parking == 'false') {
+                foreach ($hotels as $hotel) {
+                    // var_dump($hotel);
             ?>
 
-                <div class="col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center my-3">
-                    <div class="card">
-                        <div class="card-header">
-                            Hotel
+                    <div class="col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center my-3">
+                        <div class="card">
+                            <div class="card-header">
+                                Hotel
+                            </div>
+
+                            <?php
+                            foreach ($hotel as $key => $value) {
+                            ?>
+
+                                <ul class="list-group list-group-flush">
+                                    <?php
+                                    if ($key == 'parking') {
+                                        if ($value == true) {
+                                            $value = 'true';
+                                        } else {
+                                            $value = 'false';
+                                        }
+                                    }
+                                    ?>
+                                    <li class="list-group-item"><?php echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value;  ?></li>
+                                </ul>
+
+                            <?php
+                                // * La funzione ucwords trasforma in maiuscolo il primo carattere della parola contenuta in $key
+                                //echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value . "<br>";
+                            }
+                            ?>
                         </div>
-
-                        <?php
-                        foreach ($hotel as $key => $value) {
-                        ?>
-
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item"><?php echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value;  ?></li>
-                            </ul>
-
-                        <?php
-                            // * La funzione ucwords trasforma in maiuscolo il primo carattere della parola contenuta in $key
-                            //echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value . "<br>";
-                        }
-                        ?>
                     </div>
-                </div>
-            <?php
+                    <?php
+                }
             }
+            // ALTRIMENTI RESTITUISCO GLI HOTEL CHE HANNO IL PARCHEGGIO
+            else {
+                foreach ($hotels as $hotel) {
+                    if ($hotel['parking'] == true) {
+
+
+                        // var_dump($hotel);
+                    ?>
+
+                        <div class="col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center my-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Hotel
+                                </div>
+
+                                <?php
+                                foreach ($hotel as $key => $value) {
+                                ?>
+
+                                    <ul class="list-group list-group-flush">
+                                        <?php
+                                        if ($key == 'parking') {
+                                            if ($value == true) {
+                                                $value = 'true';
+                                            } else {
+                                                $value = 'false';
+                                            }
+                                        }
+                                        ?>
+                                        <li class="list-group-item"><?php echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value;  ?></li>
+                                    </ul>
+
+                                <?php
+                                    // * La funzione ucwords trasforma in maiuscolo il primo carattere della parola contenuta in $key
+                                    //echo "<strong>" . ucwords($key) . "</strong>" . ": " . $value . "<br>";
+                                }
+                                ?>
+                            </div>
+                        </div>
+            <?php
+                    }
+                }
+            }
+
             ?>
         </div>
+
+        <hr>
+        <h2 class="h2-filter-title">Filtered search:</h2>
+
+        <form action="./index.php" method="GET" class="class-form">
+            <div class="check-parking">
+                <input type="checkbox" name="parking" value="true" id="parking">
+                <label for="parking">There is a car park</label>
+            </div>
+            <label for="vote">Filtered by vote:</label>
+            <input type="number" name="" id="vote">
+            <input type="submit" value="Filter">
+        </form>
+
 </body>
 
 </html>

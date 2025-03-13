@@ -10,6 +10,14 @@
     border: 1px solid red;
 }
 
+.h1-title {
+    text-align: center;
+}
+
+.h2-filter-title {
+    text-align: center;
+}
+
 li {
     list-style-type:none;
 }
@@ -17,4 +25,20 @@ li {
 /* Header della card */
 .card-header{
     text-align: center;
+}
+
+form.class-form {
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+    width: 300px;
+    margin: 20px auto;
+    border: 1px solid #333;
+    padding: .8em;
+    border-radius: 8px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, .3);
+}
+
+.check-parking {
+    line-height: 30px;
 }
